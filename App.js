@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Input } from './components/Input';
 import { Button } from './components/Button';
 
@@ -7,11 +7,26 @@ export default class App extends React.Component {
   state = {
     email: '',
     password: '',
+    authenticating: false,
   }
 
-  render() {
+  onPressSignIn() {
+    this.setState({
+      authenticating: true,
+    });
+  }
+
+  renderCurrentState() {
+    if (this.state.authenticating) {
+      return (
+        <View style={styles.form}>
+          <ActivityIndicator size='large' />
+        </View>
+      )
+    }
+
     return (
-      <View style={styles.container}>
+      <View style={styles.form}>
         <Input
           placeholder='Enter your email...'
           label='Email'
@@ -25,7 +40,15 @@ export default class App extends React.Component {
           onChangeText={password => this.setState({ password })}
           value={this.state.password}
         />
-        <Button onPress={() => console.log('pressed')}>Log In</Button>
+        <Button onPress={() => this.onPressSignIn()}>Log In</Button>
+      </View>
+    )
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.renderCurrentState()}
       </View>
     );
   }
@@ -35,5 +58,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  form: {
+    flex: 1,
   },
 });
